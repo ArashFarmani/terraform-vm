@@ -6,7 +6,7 @@ domain           = "Lab.local"
 
 
 vm_templates = {
-  ubuntu_os  = "ubuntut24"
+  ubuntu_os  = "ubuntu24"
   cenntos_os = "centos7"
 }
 
@@ -16,27 +16,12 @@ vm_datastores = {
 }
 
 
-host = {
-  host01 = "192.168.2.22"
-  host02 = "192.168.2.24"
-
+host_names = {
+  host01_key = "192.168.2.22" 
+  host02_key = "192.168.2.24" 
 }
 
 
-
-
-###template vm interfaces 
-
-host_pg = [
-  {
-    network_name = "Respina PG DS"
-    adapter_type = "vmxnet3"
-  },
-  {
-    network_name = "Office MGNT PG DS"
-    adapter_type = "vmxnet3"
-  }
-]
 
 ###########################################
 

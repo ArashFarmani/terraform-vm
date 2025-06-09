@@ -1,10 +1,12 @@
 ###vcenter credential
 variable "vcenter_user" {
     type    = string
+    sensitive = true
 }
 
 variable "vcenter_pass" {
     type    = string
+    sensitive = true
 }
 
 variable "vcenter_ip" {
@@ -15,8 +17,9 @@ variable "datacenter_name" {
     type    = string
 }
 
-variable "host" {
-    type    = map(string)
+variable "host_names" { # Renamed from host_pg for clarity of purpose
+    type        = map(string)
+    description = "Map of logical host keys to actual vSphere host names for VM placement."
 }
 
 variable "domain" {
@@ -32,48 +35,42 @@ variable "vm_datastores" {
 }
 
 
-variable "host_pg" {
-    type       = map(object({ 
-        network_name   = string
-        adaptor_type   = string
-    }))
-}
+# variable "host_portgroup" {
+#     type       = map(object({ 
+#         network_name   = string
+#         adaptor_type   = string
+#     }))
+# }
 
-
-variable "vm_memory"{
-    type              = number 
-}
-
-variable "vm_cpu"{
-    type              = number 
-}
 
 
 
 #############################################
 
 variable "vm_create" {
-    description      = "argument that change in each vm"
+    description = "Argument that changes in each vm, holding specific VM configurations."
     type             = map(object({
-        vm_host               = string
+        vm_host_key           = string
         vm_name               = string       
-        vm_template           = string     
+        vm_template_key       = string     
         vm_cpu                = number
         vm_memory             = number
-        vm_nic01_ipv4_address = string
-        vm_nic01_ipv4_netmask = string
-        vm_nic01_ipv4_gateway = string
+        primary_datastore_key = optional(string) 
         vm_disks              = list(object({
             label             = string
             size              = number
             provisioning_type = string
             datastore_key     = string
+            unit_number       = optional(number)
         }))
-        network_interfaces = list(object({
-            network_name = string
-            adapter_type = string
+        network_interfaces    = list(object({
+            network_name      = string
+            adapter_type      = string
+            ipv4_address      = optional(string) # Optional for DHCP
+            ipv4_netmask      = optional(number)
+            ipv4_gateway      = optional(string) # Optional for DHCP/multi-NIC
         }))
-
+  
     }))
 }
 
