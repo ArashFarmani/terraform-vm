@@ -1,0 +1,68 @@
+provider "vsphere" {
+  user           = var.vsphere_user
+  password       = var.vsphere_password
+  vsphere_server = var.vsphere_server
+  allow_unverified_ssl = true
+}
+
+data "vsphere_datacenter" "dc" {
+  name = var.vsphere_datacenter
+}
+
+data "vsphere_datastore" "datastore" {
+  name          = var.vsphere_datastore
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+data "vsphere_compute_cluster" "cluster" {
+  name          = var.vsphere_cluster
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+data "vsphere_virtual_machine" "template" {
+  name          = var.vm_template
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+resource "vsphere_virtual_machine" "vm" {
+  name             = "dynamic-disk-vm"
+  resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+  datastore_id     = data.vsphere_datastore.datastore.id
+
+  num_cpus = 2
+  memory   = 2048
+  guest_id = data.vsphere_virtual_machine.template.guest_id
+
+  scsi_type = data.vsphere_virtual_machine.template.scsi_type
+  network_interface {
+    network_id   = data.vsphere_virtual_machine.template.network_interface_types[0]
+    adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+  }
+
+  clone {
+    template_uuid = data.vsphere_virtual_machine.template.id
+
+    customize {
+      linux_options {
+        host_name = "terraform-vm"
+        domain    = "local"
+      }
+
+      network_interface {
+        ipv4_address = "192.168.1.100"
+        ipv4_netmask = 24
+      }
+
+      ipv4_gateway = "192.168.1.1"
+    }
+  }
+
+  dynamic "disk" {
+    for_each = var.vm_disks
+    content {
+      label            = disk.value.label
+      size             = disk.value.size
+      thin_provisioned = disk.value.thin_provisioned
+    }
+  }
+}
