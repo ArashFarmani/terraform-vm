@@ -26,19 +26,18 @@ vm_create = {
     ]
     network_interfaces = [
       {
-        network_name        = "Respina PG DS"
+        network_name        = "assign your config"
         adapter_type        = "vmxnet3"
-        ipv4_address        = "46.209.96.139"
+        ipv4_address        = "assign your config"
         ipv4_netmask        = 28
-        ipv4_gateway        = "46.209.96.129"
+        ipv4_gateway        = "assign your config"
       },
       {
-        network_name        = "Office MGNT PG DS"
+        network_name        = "assign your config"
         adapter_type        = "vmxnet3"
-        ipv4_address        = "192.168.2.44"
+        ipv4_address        = "assign your config"
         ipv4_netmask        = 24
-        # ipv4_gateway is typically defined once at the customize block level if shared,
-        # or omitted if DHCP. Add here if specific to this NIC.
+
       }
     ]
 
