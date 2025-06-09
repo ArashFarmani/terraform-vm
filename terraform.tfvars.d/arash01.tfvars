@@ -1,6 +1,6 @@
 vm_create = {
   arash01 = {
-    vm_host               = "host01"
+    host                  = "host01"
     vm_name               = "arash01"   
     vm_template           = "ubuntu_os"
     vm_cpu                = 2
