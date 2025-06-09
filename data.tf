@@ -13,12 +13,16 @@ data "vsphere_datastore" "datastore" {
   datacenter_id = data.vsphere_datacenter.datacenter_name.id
 }
 
+# data "vsphere_host" "host" {
+#   name          = local.config.vm_host
+#   datacenter_id = data.vsphere_datacenter.datacenter_name.id
+# }
+
 data "vsphere_host" "host" {
-  name          = local.host
+  for_each      = var.host_pg
+  name          = each.value
   datacenter_id = data.vsphere_datacenter.datacenter_name.id
-}
-
-
+}  
 
 data "vsphere_network" "networks" {
   for_each = {
