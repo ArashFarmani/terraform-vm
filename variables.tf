@@ -34,14 +34,10 @@ variable "vm_datastores" {
     type    = map(string)
 }
 
-
-# variable "host_portgroup" {
-#     type       = map(object({ 
-#         network_name   = string
-#         adaptor_type   = string
-#     }))
-# }
-
+variable "ssh_private_key_path" {
+  type        = string
+  description = "Path to private SSH key"
+}
 
 
 
@@ -81,11 +77,3 @@ variable "vm_create" {
 #######################
 
 
-# variable "vm_disks" {
-#   description = "List of disk configurations with provisioning type"
-#   type = map(object({
-#     label             = string
-#     size              = number
-#     provisioning_type = string # "thin", "eagerZeroedThick", or "lazyZeroedThick"
-#   }))
-# }

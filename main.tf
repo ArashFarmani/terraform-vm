@@ -25,7 +25,7 @@ resource "vsphere_virtual_machine" "vm_create" {
       label             = disk.value.label
       size              = disk.value.size
       thin_provisioned  = disk.value.provisioning_type == "thin" ? true : false
-      eagerly_scrub     = disk.value.provisioning_type == "eagerZeroedThick" ? true : false
+      eagerly_scrub     = disk.value.provisioning_type == "eagerZeroedThin" ? true : false
       datastore_id      = data.vsphere_datastore.datastore[disk.value.datastore_key].id
       unit_number       = lookup(disk.value, "unit_number", null) # <-- ADDED THIS LINE
 
@@ -47,9 +47,27 @@ resource "vsphere_virtual_machine" "vm_create" {
         }
       }
       ipv4_gateway = length(local.config.network_interfaces) > 0 ? lookup(local.config.network_interfaces[0], "ipv4_gateway", null) : null
-    }
-    
-  }
+      # ipv4_gateway = length(keys(local.config.network_interfaces)) > 0 ? lookup(values(local.config.network_interfaces)[0], "ipv4_gateway", null) : null
 
+    }    
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "growpart /dev/sda 3",
+      "echo 🛠 Resizing pvs...",
+      "pvresize /dev/sda3",
+      "echo 🛠 Resizing lvs...",
+      "lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv",
+      "echo 🛠 Resizing filesystem...",
+      "sudo btrfs filesystem resize max /"
+  ]
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = file(var.ssh_private_key_path)
+      host        = self.default_ip_address
+  }
+}
 
 }
