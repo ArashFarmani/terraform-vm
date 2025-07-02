@@ -1,5 +1,5 @@
-vcenter_user     = "administrator@vsphere.local"
-vcenter_pass     = "z}a0?B#iM[?!eUHq"
+vcenter_user     = ""
+vcenter_pass     = ""
 vcenter_ip       = "172.18.10.10"
 datacenter_name  = "Dc2-Yavin"
 domain           = "yavin.cloud"
